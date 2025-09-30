@@ -10,7 +10,6 @@ import net.minecraft.entity.boss.dragon.EnderDragonFight;
 import net.minecraft.entity.boss.dragon.EnderDragonPart;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.particle.ParticleTypes;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -23,8 +22,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import java.util.Random;
 
 @Mixin(EnderDragonEntity.class)
 public class EnderDragonMixin extends MobEntity {
@@ -50,7 +47,7 @@ public class EnderDragonMixin extends MobEntity {
 			float f = (this.random.nextFloat() - 0.5F) * 8.0F;
 			float g = (this.random.nextFloat() - 0.5F) * 4.0F;
 			float h = (this.random.nextFloat() - 0.5F) * 8.0F;
-			this.getWorld().addParticleClient(ParticleTypes.EXPLOSION_EMITTER, this.getX() + (double)f, this.getY() + (double)2.0F + (double)g, this.getZ() + (double)h, (double)0.0F, (double)0.0F, (double)0.0F);
+			this.getWorld().addParticleClient(ParticleTypes.EXPLOSION_EMITTER, this.getX() + (double)f, this.getY() + (double)2.0F + (double)g, this.getZ() + h, 0.0F, 0.0F, 0.0F);
 		}
 
 		int i = ConfigManager.getConfig().dragonXP;
@@ -69,7 +66,7 @@ public class EnderDragonMixin extends MobEntity {
 			}
 		}
 
-		Vec3d vec3d = new Vec3d((double)0.0F, (double)0.1F, (double)0.0F);
+		Vec3d vec3d = new Vec3d(0.0F, 0.1F, 0.0F);
 		this.move(MovementType.SELF, vec3d);
 
 		for(EnderDragonPart enderDragonPart : this.parts) {
