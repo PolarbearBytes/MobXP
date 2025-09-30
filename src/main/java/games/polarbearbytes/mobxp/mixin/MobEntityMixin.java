@@ -7,7 +7,6 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Final;
@@ -29,10 +28,6 @@ public abstract class MobEntityMixin extends LivingEntity {
     protected float[] armorDropChances;
     @Final @Shadow
     protected float[] handDropChances;
-    @Shadow
-    protected float bodyArmorDropChance;
-    @Shadow
-    private ItemStack bodyArmor;
 
     protected MobEntityMixin(EntityType<? extends LivingEntity> entityType, World world) {
         super(entityType, world);
@@ -70,10 +65,6 @@ public abstract class MobEntityMixin extends LivingEntity {
                 if (!((ItemStack)this.handItems.get(j)).isEmpty() && this.handDropChances[j] <= 1.0F) {
                     i += 1 + this.random.nextInt(3);
                 }
-            }
-
-            if (!this.bodyArmor.isEmpty() && this.bodyArmorDropChance <= 1.0F) {
-                i += 1 + this.random.nextInt(3);
             }
 
             cir.setReturnValue(i);
