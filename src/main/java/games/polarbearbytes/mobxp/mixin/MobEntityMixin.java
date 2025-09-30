@@ -39,11 +39,11 @@ public abstract class MobEntityMixin extends LivingEntity {
     }
 
     @Inject(
-            method = "getXpToDrop(Lnet/minecraft/server/world/ServerWorld;)I",
+            method = "getXpToDrop()I",
             at = @At("HEAD"),
             cancellable = true
     )
-    private void getExperienceToDropMixin(ServerWorld world, CallbackInfoReturnable<Integer> cir) {
+    private void getExperienceToDropMixin(CallbackInfoReturnable<Integer> cir) {
         //TODO check for baby zombie
         //TODO check for baby zoglin
 

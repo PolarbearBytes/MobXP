@@ -21,11 +21,11 @@ public abstract class EntityXPMixin extends Entity {
     }
 
     @Inject(
-            method = "getXpToDrop(Lnet/minecraft/server/world/ServerWorld;)I",
+            method = "getXpToDrop()I",
             at = @At("HEAD"),
             cancellable = true
     )
-    private void getExperienceToDropMixin(ServerWorld world, CallbackInfoReturnable<Integer> cir) {
+    private void getExperienceToDropMixin(CallbackInfoReturnable<Integer> cir) {
         //TODO Check for Chicken Jockey
         MobXPConfig.MobXPData data = ConfigManager.getConfig().xp.get(this.getSavedEntityId());
         if(data == null){
