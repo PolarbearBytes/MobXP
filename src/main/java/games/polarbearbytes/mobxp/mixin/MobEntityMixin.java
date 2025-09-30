@@ -39,7 +39,7 @@ public abstract class MobEntityMixin extends LivingEntity {
     }
 
     @Inject(
-            method = "getExperienceToDrop(Lnet/minecraft/server/world/ServerWorld;)I",
+            method = "getXpToDrop(Lnet/minecraft/server/world/ServerWorld;)I",
             at = @At("HEAD"),
             cancellable = true
     )

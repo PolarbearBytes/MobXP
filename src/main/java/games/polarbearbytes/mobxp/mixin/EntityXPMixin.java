@@ -21,7 +21,7 @@ public abstract class EntityXPMixin extends Entity {
     }
 
     @Inject(
-            method = "getExperienceToDrop(Lnet/minecraft/server/world/ServerWorld;)I",
+            method = "getXpToDrop(Lnet/minecraft/server/world/ServerWorld;)I",
             at = @At("HEAD"),
             cancellable = true
     )
