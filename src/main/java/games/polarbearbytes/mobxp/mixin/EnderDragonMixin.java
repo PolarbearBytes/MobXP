@@ -47,7 +47,7 @@ public class EnderDragonMixin extends MobEntity {
 			float f = (this.random.nextFloat() - 0.5F) * 8.0F;
 			float g = (this.random.nextFloat() - 0.5F) * 4.0F;
 			float h = (this.random.nextFloat() - 0.5F) * 8.0F;
-			this.getWorld().addParticleClient(ParticleTypes.EXPLOSION_EMITTER, this.getX() + (double)f, this.getY() + (double)2.0F + (double)g, this.getZ() + h, 0.0F, 0.0F, 0.0F);
+			this.getWorld().addParticle(ParticleTypes.EXPLOSION_EMITTER, this.getX() + (double)f, this.getY() + (double)2.0F + (double)g, this.getZ() + h, 0.0F, 0.0F, 0.0F);
 		}
 
 		int i = ConfigManager.getConfig().dragonXP;
