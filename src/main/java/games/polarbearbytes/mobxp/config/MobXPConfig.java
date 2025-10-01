@@ -7,7 +7,17 @@ public class MobXPConfig {
     public int dragonXP = 12000;
     public int firstDragonXP = 12000;
 
-    public record MobXPData(boolean enabled, int experiencePoints, boolean random) {}
+    public static class MobXPData {
+        public boolean enabled;
+        public int experiencePoints;
+        public boolean random;
+
+        public MobXPData(boolean enabled, int experiencePoints, boolean random){
+            this.enabled = enabled;
+            this.experiencePoints = experiencePoints;
+            this.random = random;
+        }
+    }
 
     public final Map<String, MobXPData> xp = new HashMap<>();
     public MobXPConfig(){

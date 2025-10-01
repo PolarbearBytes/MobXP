@@ -31,8 +31,8 @@ public abstract class EntityXPMixin extends Entity {
             MobXP.LOGGER.info("{} not found in MobXPData list",this.getSavedEntityId());
             return;
         }
-        if(data.enabled()){
-            int xp = data.random() ? this.random.nextInt(data.experiencePoints()) : data.experiencePoints();
+        if(data.enabled){
+            int xp = data.random ? 1+this.random.nextInt(data.experiencePoints) : data.experiencePoints;
             cir.setReturnValue(xp);
         }
     }

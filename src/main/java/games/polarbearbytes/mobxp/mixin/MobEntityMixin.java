@@ -48,8 +48,8 @@ public abstract class MobEntityMixin extends LivingEntity {
         }
 
         int xp = this.experiencePoints;
-        if(data!=null && data.enabled()){
-            xp = data.random() ? this.random.nextInt( data.experiencePoints() ) : data.experiencePoints();
+        if(data!=null && data.enabled){
+            xp = data.random ? 1+this.random.nextInt( data.experiencePoints ) : data.experiencePoints;
         }
 
         if (xp > 0) {
