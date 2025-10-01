@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MobXPConfig {
-    public int dragonXP = 12000;
+    public int dragonXP = 500;
     public int firstDragonXP = 12000;
 
     public static class MobXPData {
