@@ -47,7 +47,7 @@ public class EnderDragonMixin extends MobEntity {
 			float f = (this.random.nextFloat() - 0.5F) * 8.0F;
 			float g = (this.random.nextFloat() - 0.5F) * 4.0F;
 			float h = (this.random.nextFloat() - 0.5F) * 8.0F;
-			this.getWorld().addParticleClient(ParticleTypes.EXPLOSION_EMITTER, this.getX() + (double)f, this.getY() + (double)2.0F + (double)g, this.getZ() + h, 0.0F, 0.0F, 0.0F);
+			this.getEntityWorld().addParticleClient(ParticleTypes.EXPLOSION_EMITTER, this.getX() + (double)f, this.getY() + (double)2.0F + (double)g, this.getZ() + h, 0.0F, 0.0F, 0.0F);
 		}
 
 		int i = ConfigManager.getConfig().dragonXP;
@@ -55,10 +55,10 @@ public class EnderDragonMixin extends MobEntity {
 			i = ConfigManager.getConfig().firstDragonXP;
 		}
 
-		World var10 = this.getWorld();
+		World var10 = this.getEntityWorld();
 		if (var10 instanceof ServerWorld serverWorld) {
 			if (this.ticksSinceDeath > 150 && this.ticksSinceDeath % 5 == 0 && serverWorld.getGameRules().getBoolean(GameRules.DO_MOB_LOOT)) {
-				ExperienceOrbEntity.spawn(serverWorld, this.getPos(), MathHelper.floor((float)i * 0.08F));
+				ExperienceOrbEntity.spawn(serverWorld, this.getEntityPos(), MathHelper.floor((float)i * 0.08F));
 			}
 
 			if (this.ticksSinceDeath == 1 && !this.isSilent()) {
@@ -71,14 +71,14 @@ public class EnderDragonMixin extends MobEntity {
 
 		for(EnderDragonPart enderDragonPart : this.parts) {
 			enderDragonPart.resetPosition();
-			enderDragonPart.setPosition(enderDragonPart.getPos().add(vec3d));
+			enderDragonPart.setPosition(enderDragonPart.getEntityPos().add(vec3d));
 		}
 
 		if (this.ticksSinceDeath == 200) {
-			World var13 = this.getWorld();
+			World var13 = this.getEntityWorld();
 			if (var13 instanceof ServerWorld serverWorld2) {
                 if (serverWorld2.getGameRules().getBoolean(GameRules.DO_MOB_LOOT)) {
-					ExperienceOrbEntity.spawn(serverWorld2, this.getPos(), MathHelper.floor((float)i * 0.2F));
+					ExperienceOrbEntity.spawn(serverWorld2, this.getEntityPos(), MathHelper.floor((float)i * 0.2F));
 				}
 
 				if (this.fight != null) {
