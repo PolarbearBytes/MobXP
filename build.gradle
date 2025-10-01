@@ -67,11 +67,11 @@ tasks.jar {
 	from("LICENSE") {
 		rename { "${it}_${project.base.archivesName.get()}" }
 	}
-	archiveFileName.set("${project.base.archivesName.get()}-${project.version}-${project.property("minecraft_version")}.jar")
+	archiveFileName.set("${project.base.archivesName.get()}-${project.version}-${project.property("minecraft_version")}-${project.property("minecraft_max_version")}.jar")
 }
 
 tasks.remapJar {
-	archiveFileName.set("${project.base.archivesName.get()}-${project.version}-${project.property("minecraft_version")}.jar")
+	archiveFileName.set("${project.base.archivesName.get()}-${project.version}-${project.property("minecraft_version")}-${project.property("minecraft_max_version")}.jar")
 }
 
 
