@@ -63,18 +63,15 @@ java {
 	targetCompatibility = JavaVersion.VERSION_21
 }
 
-jar {
+tasks.jar {
 	from("LICENSE") {
-		rename { "${it}_${project.base.archivesName.get()}"}
+		rename { "${it}_${project.base.archivesName.get()}" }
 	}
-	doFirst {
-		archiveFileName = "${project.base.archivesName.get()}-${project.version}-${project.property("minecraft_version")}.jar"
-	}
+	archiveFileName.set("${project.base.archivesName.get()}-${project.version}-${project.property("minecraft_version")}-${project.property("minecraft_max_version")}.jar")
 }
 
-remapJar {
-	dependsOn jar
-	archiveFileName.set("${project.archives_base_name}-${project.mod_version}-${project.minecraft_version}.jar")
+tasks.remapJar {
+	archiveFileName.set("${project.base.archivesName.get()}-${project.version}-${project.property("minecraft_version")}-${project.property("minecraft_max_version")}.jar")
 }
 
 // configure the maven publication
