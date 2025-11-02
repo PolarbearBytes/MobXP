@@ -4,8 +4,11 @@ import games.polarbearbytes.mobxp.MobXP;
 import games.polarbearbytes.mobxp.config.ConfigManager;
 import games.polarbearbytes.mobxp.config.MobXPConfig;
 import net.minecraft.entity.*;
+import net.minecraft.entity.mob.ElderGuardianEntity;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.entity.passive.GlowSquidEntity;
+import net.minecraft.entity.passive.WaterAnimalEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
@@ -13,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin({LivingEntity.class,AnimalEntity.class})
+@Mixin({LivingEntity.class,AnimalEntity.class, WaterAnimalEntity.class})
 public abstract class EntityXPMixin extends Entity {
 
     protected EntityXPMixin(EntityType<? extends MobEntity> entityType, World world) {
