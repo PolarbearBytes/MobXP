@@ -13,9 +13,9 @@ import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraft.world.event.GameEvent;
+import net.minecraft.world.rule.GameRules;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -57,7 +57,7 @@ public class EnderDragonMixin extends MobEntity {
 
 		World var10 = this.getEntityWorld();
 		if (var10 instanceof ServerWorld serverWorld) {
-			if (this.ticksSinceDeath > 150 && this.ticksSinceDeath % 5 == 0 && serverWorld.getGameRules().getBoolean(GameRules.DO_MOB_LOOT)) {
+			if (this.ticksSinceDeath > 150 && this.ticksSinceDeath % 5 == 0 && serverWorld.getGameRules().getValue(GameRules.DO_MOB_LOOT)) {
 				ExperienceOrbEntity.spawn(serverWorld, this.getEntityPos(), MathHelper.floor((float)i * 0.08F));
 			}
 
@@ -77,7 +77,7 @@ public class EnderDragonMixin extends MobEntity {
 		if (this.ticksSinceDeath == 200) {
 			World var13 = this.getEntityWorld();
 			if (var13 instanceof ServerWorld serverWorld2) {
-                if (serverWorld2.getGameRules().getBoolean(GameRules.DO_MOB_LOOT)) {
+                if (serverWorld2.getGameRules().getValue(GameRules.DO_MOB_LOOT)) {
 					ExperienceOrbEntity.spawn(serverWorld2, this.getEntityPos(), MathHelper.floor((float)i * 0.2F));
 				}
 
