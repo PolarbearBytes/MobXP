@@ -18,9 +18,7 @@
 		"main": [
 			"games.polarbearbytes.mobxp.MobXP"
 		],
-		"client": [
-			"games.polarbearbytes.mobxp.MobXPClient"
-		]
+		"client": []
 	},
 	"mixins": [
 		"mobxp.mixins.json",
@@ -31,7 +29,7 @@
 	],
 	"depends": {
 		"fabricloader": ">=0.17.2",
-		"minecraft": ">=1.21.9-",
+		"minecraft": ">=1.21.11",
 		"java": ">=21",
 		"fabric-api": "*"
 	},
