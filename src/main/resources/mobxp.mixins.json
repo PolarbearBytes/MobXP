@@ -1,16 +1,17 @@
 {
-	"required": true,
-	"package": "games.polarbearbytes.mobxp.mixin",
-	"compatibilityLevel": "JAVA_21",
-	"mixins": [
-		"EnderDragonMixin",
-		"EntityXPMixin",
-		"MobEntityMixin"
-	],
-	"injectors": {
-		"defaultRequire": 1
-	},
-	"overwrites": {
-		"requireAnnotations": true
+  "required": true,
+  "package": "games.polarbearbytes.mobxp.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "EnderDragonMixin",
+    "EntityXPMixin",
+    "LivingEntityMixin",
+    "MobEntityMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
 	}
 }

@@ -1,8 +1,7 @@
 package games.polarbearbytes.mobxp.mixin;
 
-import games.polarbearbytes.mobxp.MobXP;
 import games.polarbearbytes.mobxp.config.ConfigManager;
-import games.polarbearbytes.mobxp.config.MobXPConfig;
+import games.polarbearbytes.mobxp.data.MobXPData;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentDropChances;
 import net.minecraft.entity.EquipmentSlot;
@@ -17,6 +16,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+/**
+ * General mob mixin to modify MobEntity class to allow for custom xp, covers the class EntityXPMixin doesn't modify
+ */
 @Mixin(MobEntity.class)
 public abstract class MobEntityMixin extends LivingEntity {
     @Shadow
@@ -34,16 +36,15 @@ public abstract class MobEntityMixin extends LivingEntity {
             cancellable = true
     )
     private void getExperienceToDropMixin(ServerWorld world, CallbackInfoReturnable<Integer> cir) {
-        //TODO check for baby zombie
-        //TODO check for baby zoglin
-
-        MobXPConfig.MobXPData data = ConfigManager.getConfig().xp.get(this.getSavedEntityId());
-        if(data == null){
-            MobXP.LOGGER.info("{} not found in MobXPData list",this.getSavedEntityId());
-        }
+        MobXPData data = ConfigManager.getConfig().get(this.getSavedEntityId());
 
         int xp = this.experiencePoints;
-        if(data!=null && data.enabled()){
+
+        /*
+         EnderDragonEntity extends MobEntity so this method gets called on its death, but its XP is dropped from the
+         updatePostDeath() method, so we need to check if entity is not dragon so we do not accidentally drop its xp here
+         */
+        if(data!=null && data.experiencePoints() != null && data.enabled() && this.getType() != EntityType.ENDER_DRAGON){
             xp = data.random() ? this.random.nextInt( data.experiencePoints() ) : data.experiencePoints();
         }
 

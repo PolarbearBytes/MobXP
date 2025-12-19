@@ -3,13 +3,18 @@ package games.polarbearbytes.mobxp.config;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import games.polarbearbytes.mobxp.MobXP;
+import games.polarbearbytes.mobxp.data.MobXPData;
 import net.fabricmc.loader.api.FabricLoader;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Objects;
 
+/**
+ * Manager for load, saving, retrieving the configuration settings for the mod
+ */
 public class ConfigManager {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final File CONFIG_FILE = new File(FabricLoader.getInstance().getConfigDir().toFile(), "mobxp.json");
@@ -23,6 +28,14 @@ public class ConfigManager {
         } else {
             try (FileReader reader = new FileReader(CONFIG_FILE)) {
                 config = GSON.fromJson(reader, MobXPConfig.class);
+                //Code to help migrate an old JSON format to a more standard one that does not separate out ender dragon xp details
+                MobXPData data = config.get("minecraft:ender_dragon");
+                if(config.dragonXP != null && ((!Objects.equals(data.secondaryExperiencePoints(), config.dragonXP) && !Objects.equals(config.dragonXP, 500)) || (!Objects.equals(data.experiencePoints(), config.firstDragonXP) && !Objects.equals(config.firstDragonXP, 12000))) ){
+                    data = new MobXPData(data.id(), config.firstDragonXP, config.dragonXP, null, data.enabled(), data.random(), false);
+                    config.updateMobXP(data);
+                }
+                config.dragonXP = null;
+                config.firstDragonXP = null;
             } catch (IOException e) {
                 MobXP.LOGGER.error(e.getMessage());
                 config = new MobXPConfig(); // fallback
@@ -34,7 +47,7 @@ public class ConfigManager {
         try (FileWriter writer = new FileWriter(CONFIG_FILE)) {
             GSON.toJson(config, writer);
         } catch (IOException e) {
-            MobXP.LOGGER.warn(e.getMessage());
+            MobXP.LOGGER.error(e.getMessage());
         }
     }
 

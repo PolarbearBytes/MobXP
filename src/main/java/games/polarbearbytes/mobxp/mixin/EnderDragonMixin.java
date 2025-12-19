@@ -1,6 +1,7 @@
 package games.polarbearbytes.mobxp.mixin;
 
 import games.polarbearbytes.mobxp.config.ConfigManager;
+import games.polarbearbytes.mobxp.data.MobXPData;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ExperienceOrbEntity;
@@ -22,7 +23,11 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import java.util.Optional;
 
+/**
+ * Mixin for {@link EnderDragonEntity} class to modify it to allow for custom experience points
+ */
 @Mixin(EnderDragonEntity.class)
 public class EnderDragonMixin extends MobEntity {
 	@Shadow
@@ -38,6 +43,14 @@ public class EnderDragonMixin extends MobEntity {
 
 	@Inject(at = @At("HEAD"), method = "updatePostDeath()V", cancellable = true)
 	private void updatePostDeathMixin(CallbackInfo ci) {
+		/************ Start Custom Experience Point Code ************/
+		MobXPData dragonData = ConfigManager.getConfig().get("minecraft:ender_dragon");
+		Integer firstXP = dragonData.experiencePoints();
+		Integer secondaryXP = dragonData.secondaryExperiencePoints();
+
+		if(!dragonData.enabled()) return;
+		/************ End Custom Experience Point Code ************/
+
 		if (this.fight != null) {
 			this.fight.updateFight((EnderDragonEntity) (Object) this);
 		}
@@ -50,10 +63,12 @@ public class EnderDragonMixin extends MobEntity {
 			this.getEntityWorld().addParticleClient(ParticleTypes.EXPLOSION_EMITTER, this.getX() + (double)f, this.getY() + (double)2.0F + (double)g, this.getZ() + h, 0.0F, 0.0F, 0.0F);
 		}
 
-		int i = ConfigManager.getConfig().dragonXP;
+		/************ Start Custom Experience Point Code ************/
+		int i = Optional.ofNullable(secondaryXP).orElse(500);
 		if (this.fight != null && !this.fight.hasPreviouslyKilled()) {
-			i = ConfigManager.getConfig().firstDragonXP;
+			i = Optional.ofNullable(firstXP).orElse(12000);
 		}
+		/************ End Custom Experience Point Code ************/
 
 		World var10 = this.getEntityWorld();
 		if (var10 instanceof ServerWorld serverWorld) {
