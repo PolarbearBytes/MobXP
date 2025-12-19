@@ -20,9 +20,8 @@ public class MobXP implements ModInitializer {
 	}
 
 	public static boolean hasManageXPPermission(ServerPlayerEntity player, MinecraftServer server) {
-		boolean singlePlayerHost = server.isSingleplayer() && server.getPlayerManager().isOperator(player.getPlayerConfigEntry());
+		boolean singlePlayerOP = server.isSingleplayer() && server.getPlayerManager().isOperator(player.getPlayerConfigEntry());
 		boolean serverPlayerOP = !server.isSingleplayer() && server.getPlayerManager().isOperator(player.getPlayerConfigEntry());
-
-		return singlePlayerHost || serverPlayerOP || Permissions.check(player, MobXP.MOD_ID+".manageXP");
+		return singlePlayerOP || serverPlayerOP || Permissions.check(player, MobXP.MOD_ID+".manageXP");
 	}
 }
