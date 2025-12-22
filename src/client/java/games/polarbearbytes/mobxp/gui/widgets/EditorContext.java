@@ -1,5 +1,6 @@
 package games.polarbearbytes.mobxp.gui.widgets;
 
+import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.CheckboxWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.TextWidget;
@@ -18,7 +19,10 @@ public final class EditorContext {
     public final TextWidget babyLabel;
     public final CheckboxWidget enabledCheckbox;
     public final CheckboxWidget randomCheckbox;
-    public final CheckboxWidget useAdultXPCheckbox;
+    public final CheckboxWidget usePrimaryXPForBaby;
+    public final ButtonWidget applyButton;
+    public final ButtonWidget saveCloseButton;
+
     public EditorContext(
             TextFieldWidget primaryXP,
             TextWidget primaryLabel,
@@ -29,7 +33,9 @@ public final class EditorContext {
             TextWidget xpLabel,
             TextWidget babyLabel,
             TextFieldWidget babyXP,
-            CheckboxWidget useAdultXPCheckbox
+            CheckboxWidget usePrimaryXPForBaby,
+            ButtonWidget applyButton,
+            ButtonWidget saveClostButton
     ) {
         this.primaryXP = primaryXP;
         this.primaryLabel = primaryLabel;
@@ -40,7 +46,9 @@ public final class EditorContext {
         this.xpLabel = xpLabel;
         this.babyLabel = babyLabel;
         this.babyXP = babyXP;
-        this.useAdultXPCheckbox = useAdultXPCheckbox;
+        this.usePrimaryXPForBaby = usePrimaryXPForBaby;
+        this.applyButton = applyButton;
+        this.saveCloseButton = saveClostButton;
     }
 
     /**
@@ -56,7 +64,9 @@ public final class EditorContext {
         randomCheckbox.visible = false;
         babyLabel.visible = false;
         babyXP.visible = false;
-        useAdultXPCheckbox.visible = false;
+        usePrimaryXPForBaby.visible = false;
+        applyButton.visible = false;
+        saveCloseButton.visible = false;
     }
 
     /**
@@ -67,6 +77,8 @@ public final class EditorContext {
         primaryXP.visible = true;
         enabledCheckbox.visible = true;
         randomCheckbox.visible = true;
+        applyButton.visible = true;
+        saveCloseButton.visible = true;
     }
 
     /**
@@ -84,7 +96,7 @@ public final class EditorContext {
     public void showBaby(boolean show) {
         babyLabel.visible = show;
         babyXP.visible = show;
-        useAdultXPCheckbox.visible = show;
+        usePrimaryXPForBaby.visible = show;
     }
 
     public void setLabels(String primaryLabel, String secondaryLabel){

@@ -7,7 +7,6 @@ import java.util.Map;
  * XPRules Registry
  */
 public final class XPRules {
-    //More mobs that have babies than ones that do not so by default use the baby xp rule and make rules for the ones who don't
     private static final XPRule DEFAULT = new GeneralXPRule();
 
     private static final Map<String, XPRule> RULES;
@@ -15,7 +14,7 @@ public final class XPRules {
         Map<String, XPRule> tmp = new HashMap<>();
         //Dragons have different xp on first kill vs other kills
         tmp.put("minecraft:ender_dragon", new EnderDragonXPRule());
-        //Chickens have different xp if they are a baby, have a jockey, or an adult
+        //Chickens have different xp based on if it is a baby, has a jockey, or is an adult
         tmp.put("minecraft:chicken", new ChickenXPRule());
         //Mobs that have a baby variant
         tmp.put("minecraft:hoglin", new BabyVariantXPRule());

@@ -1,13 +1,14 @@
 package games.polarbearbytes.mobxp.gui.widgets;
 
 import games.polarbearbytes.mobxp.data.MobXPData;
-import games.polarbearbytes.mobxp.gui.screens.WidgetReceiverScreen;
+import games.polarbearbytes.mobxp.gui.screens.MobXPListScreen;
 import games.polarbearbytes.mobxp.rules.XPRule;
 import games.polarbearbytes.mobxp.rules.XPRules;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Drawable;
+import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.CheckboxWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.TextWidget;
@@ -38,7 +39,10 @@ public class MobXPDetailsPanel implements Drawable {
     private static final int FIELD_HEIGHT = 20;
     private static final int LINE_HEIGHT = FIELD_HEIGHT + MARGIN;
 
-    public MobXPDetailsPanel(WidgetReceiverScreen parent, int x, int y, int width, int height){
+    private final MobXPListScreen parent;
+
+    public MobXPDetailsPanel(MobXPListScreen parent, int x, int y, int width, int height){
+        this.parent = parent;
         textRenderer = MinecraftClient.getInstance().textRenderer;
         this.x = x;
         this.y = y;
@@ -87,8 +91,22 @@ public class MobXPDetailsPanel implements Drawable {
 
         placementY += LINE_HEIGHT;
 
-        CheckboxWidget useAdultXPCheckbox = CheckboxWidget.builder(Text.literal("Same As Adult"), textRenderer)
+        CheckboxWidget usePrimaryXPForBaby = CheckboxWidget.builder(Text.literal("Same As Adult"), textRenderer)
                 .pos(fieldX, placementY)
+                .build();
+
+        int startX = x + MARGIN;
+
+        int buttonWidth = (width - MARGIN * 3) / 2;
+        int buttonY = height - FIELD_HEIGHT;
+
+        ButtonWidget applyButton = ButtonWidget.builder(Text.literal("Apply"), b -> applyChanges())
+                .position(startX, buttonY)
+                .size(buttonWidth, FIELD_HEIGHT)
+                .build();
+        ButtonWidget saveButton = ButtonWidget.builder(Text.literal("Save & Close"), b -> saveAndClose())
+                .position(startX + buttonWidth + MARGIN, buttonY)
+                .size(buttonWidth, FIELD_HEIGHT)
                 .build();
 
         parent.addDrawable(this);
@@ -104,7 +122,10 @@ public class MobXPDetailsPanel implements Drawable {
 
         parent.add(babyLabel);
         parent.add(babyXPField);
-        parent.add(useAdultXPCheckbox);
+        parent.add(usePrimaryXPForBaby);
+
+        parent.add(applyButton);
+        parent.add(saveButton);
 
         editorContext = new EditorContext(
                 primaryXPField,
@@ -116,7 +137,9 @@ public class MobXPDetailsPanel implements Drawable {
                 xpLabel,
                 babyLabel,
                 babyXPField,
-                useAdultXPCheckbox
+                usePrimaryXPForBaby,
+                applyButton,
+                saveButton
         );
 
         editorContext.hideAll();
@@ -156,6 +179,20 @@ public class MobXPDetailsPanel implements Drawable {
         context.fill(x,y, x+width, y+height, 0x99000000);
         context.fill(x,y, x+width, y+24, 0xFF0a0a0a);
 
-        context.drawCenteredTextWithShadow(textRenderer, title, x + (width / 2), 8, 0xFFFFFFFF);
+        context.drawCenteredTextWithShadow(textRenderer, title, x + (width / 2), y+8, 0xFFFFFFFF);
+    }
+
+    /**
+     * Saves the changes of the currently selected mob
+     */
+    private void applyChanges(){
+        this.parent.applyChanges(getDetails());
+    }
+
+    /**
+     * Apply the changes and close screen
+     */
+    private void saveAndClose(){
+        this.parent.saveAndClose(getDetails());
     }
 }

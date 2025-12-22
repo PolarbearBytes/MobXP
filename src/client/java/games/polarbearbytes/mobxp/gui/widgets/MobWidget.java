@@ -10,7 +10,7 @@ import net.minecraft.entity.SpawnReason;
 import java.util.Map;
 
 /**
- * Widget for displaying a mob in teh same fashion the player is displayed in the inventory screen, e.g. follows mouse etc
+ * Widget for displaying a mob in teh same fashion the player is displayed in the inventory screen, e.g. follows mouse etc.
  * Uses InventoryScreen#drawEntity() to do the actual displaying
  */
 public class MobWidget implements Drawable {
@@ -45,13 +45,11 @@ public class MobWidget implements Drawable {
      * Renders the mob entity by calling InventoryScreen.drawEntity(), uses passed scale and offset to size and position mob in region
      * @param scale Used to scale the entity model
      * @param offset Used to position the entity model vertically
-     * @param context
-     * @param mouseX
-     * @param mouseY
-     * @param deltaTicks
+     * @param context drawing context
+     * @param mouseX x position of mouse
+     * @param mouseY y position of mouse
      */
-    public void render(double scale, double offset, DrawContext context, int mouseX, int mouseY, float deltaTicks) {
-        context.fill(x,y,x+width,y+height,0xFF000000);
+    public void render(double scale, double offset, DrawContext context, int mouseX, int mouseY) {
         int shift = (int) (offset * height);
         int size = (int)(height * 0.45f * scale);
 
@@ -60,17 +58,17 @@ public class MobWidget implements Drawable {
     }
 
     /**
-     * Overloaded to redirect to the {@link #render(double, double, DrawContext, int, int, float)} method that can take scale and offset arguments, default use 1 nad 1 respectively (no scaling no offsetting)
-     * @param context
-     * @param mouseX
-     * @param mouseY
-     * @param deltaTicks
+     * Overloaded to redirect to the {@link #render(double, double, DrawContext, int, int)} method that can take scale and offset arguments, default use 1 nad 1 respectively (no scaling no offsetting)
+     * @param context drawing context
+     * @param mouseX x position of mouse
+     * @param mouseY y position of mouse
+     * @param deltaTicks ticks since last render
      */
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
         double offset = MODEL_OFFSET_FIX.getOrDefault(entity.getType(), 1F);
         double scale = MODEL_SCALE_FIX.getOrDefault(entity.getType(), 1F);
-        render(scale, offset, context, mouseX, mouseY, deltaTicks);
+        render(scale, offset, context, mouseX, mouseY);
     }
 
     /**

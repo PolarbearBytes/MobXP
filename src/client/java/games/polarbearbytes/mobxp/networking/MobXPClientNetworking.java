@@ -11,8 +11,6 @@ import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 
-import java.util.HashMap;
-
 /**
  * Class for handling all the networking requests and actions to take
  */
@@ -25,23 +23,20 @@ public class MobXPClientNetworking {
     }
 
     /**
-     * Action for handling the incoming data list packet, filter the list by entities that are instances of LivingEntity (actual mobs)
-     * Still doesn't filter out things like Armor Stands, might need a better filter down the road
+     * Action for handling the incoming data list packet, filter the list by entities that are instances of MobEntity (actual mobs)
+     *
      * @param packet {@link MobXPDataListPacket} packet containing the mob xp details list
      * @param context Client context
      */
     public static void onDataListPacket(MobXPDataListPacket packet, Context context){
         context.client().execute(()->{
-            MobXPClient.mobXPData = new HashMap<>();
             packet.mobXPDataList().forEach(data->{
                 try {
                     MobEntity entity = (MobEntity) Registries.ENTITY_TYPE.get(Identifier.of(data.id())).create(MinecraftClient.getInstance().world, SpawnReason.EVENT);
                     if(entity != null){
                         MobXPClient.mobXPData.put(data.id(),data);
                     }
-                } catch(Exception ignored) {
-
-                }
+                } catch(Exception ignored) {}
             });
             Screen currentScreen = context.client().currentScreen;
             if(currentScreen instanceof MobXPListScreen) {

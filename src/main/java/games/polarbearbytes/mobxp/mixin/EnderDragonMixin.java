@@ -1,6 +1,6 @@
 package games.polarbearbytes.mobxp.mixin;
 
-import games.polarbearbytes.mobxp.config.ConfigManager;
+import games.polarbearbytes.mobxp.config.MobXPStateManager;
 import games.polarbearbytes.mobxp.data.MobXPData;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -23,7 +23,8 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import java.util.Optional;
+import java.util.Objects;
+
 
 /**
  * Mixin for {@link EnderDragonEntity} class to modify it to allow for custom experience points
@@ -43,13 +44,14 @@ public class EnderDragonMixin extends MobEntity {
 
 	@Inject(at = @At("HEAD"), method = "updatePostDeath()V", cancellable = true)
 	private void updatePostDeathMixin(CallbackInfo ci) {
-		/************ Start Custom Experience Point Code ************/
-		MobXPData dragonData = ConfigManager.getConfig().get("minecraft:ender_dragon");
-		Integer firstXP = dragonData.experiencePoints();
-		Integer secondaryXP = dragonData.secondaryExperiencePoints();
+		/* Start Custom Experience Point Code */
+		MobXPStateManager state = MobXPStateManager.get(Objects.requireNonNull(this.getEntityWorld().getServer()));
+		MobXPData dragonData = state.getMobData(getSavedEntityId());
+		int firstXP = dragonData.primaryXP();
+		int secondaryXP = dragonData.secondaryXP();
 
-		if(!dragonData.enabled()) return;
-		/************ End Custom Experience Point Code ************/
+		if(!dragonData.enabled() || (firstXP <= -1 && secondaryXP <= -1)) return;
+		/* End Custom Experience Point Code */
 
 		if (this.fight != null) {
 			this.fight.updateFight((EnderDragonEntity) (Object) this);
@@ -63,17 +65,18 @@ public class EnderDragonMixin extends MobEntity {
 			this.getEntityWorld().addParticleClient(ParticleTypes.EXPLOSION_EMITTER, this.getX() + (double)f, this.getY() + (double)2.0F + (double)g, this.getZ() + h, 0.0F, 0.0F, 0.0F);
 		}
 
-		/************ Start Custom Experience Point Code ************/
-		int i = Optional.ofNullable(secondaryXP).orElse(500);
+		/* Start Custom Experience Point Code */
+		int xp = secondaryXP <= -1 ? 500 : secondaryXP;
 		if (this.fight != null && !this.fight.hasPreviouslyKilled()) {
-			i = Optional.ofNullable(firstXP).orElse(12000);
+			xp = firstXP <= -1 ? 12000 : firstXP;
 		}
-		/************ End Custom Experience Point Code ************/
+		xp = dragonData.random() ? this.random.nextInt( xp ) : xp;
+		/* End Custom Experience Point Code */
 
 		World var10 = this.getEntityWorld();
 		if (var10 instanceof ServerWorld serverWorld) {
 			if (this.ticksSinceDeath > 150 && this.ticksSinceDeath % 5 == 0 && serverWorld.getGameRules().getValue(GameRules.DO_MOB_LOOT)) {
-				ExperienceOrbEntity.spawn(serverWorld, this.getEntityPos(), MathHelper.floor((float)i * 0.08F));
+				ExperienceOrbEntity.spawn(serverWorld, this.getEntityPos(), MathHelper.floor((float)xp * 0.08F));
 			}
 
 			if (this.ticksSinceDeath == 1 && !this.isSilent()) {
@@ -93,7 +96,7 @@ public class EnderDragonMixin extends MobEntity {
 			World var13 = this.getEntityWorld();
 			if (var13 instanceof ServerWorld serverWorld2) {
                 if (serverWorld2.getGameRules().getValue(GameRules.DO_MOB_LOOT)) {
-					ExperienceOrbEntity.spawn(serverWorld2, this.getEntityPos(), MathHelper.floor((float)i * 0.2F));
+					ExperienceOrbEntity.spawn(serverWorld2, this.getEntityPos(), MathHelper.floor((float)xp * 0.2F));
 				}
 
 				if (this.fight != null) {

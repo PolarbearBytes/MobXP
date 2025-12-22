@@ -1,9 +1,10 @@
 package games.polarbearbytes.mobxp;
 
-import games.polarbearbytes.mobxp.config.ConfigManager;
+import games.polarbearbytes.mobxp.commands.MobXPCommands;
 import games.polarbearbytes.mobxp.networking.MobXPServerNetworking;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.slf4j.Logger;
@@ -16,7 +17,7 @@ public class MobXP implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		MobXPServerNetworking.register();
-		ConfigManager.loadConfig();
+		CommandRegistrationCallback.EVENT.register(MobXPCommands::register);
 	}
 
 	public static boolean hasManageXPPermission(ServerPlayerEntity player, MinecraftServer server) {

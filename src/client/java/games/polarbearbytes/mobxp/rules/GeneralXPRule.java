@@ -16,7 +16,7 @@ public class GeneralXPRule implements XPRule {
      */
     @Override
     public void onSelect(EditorContext ctx, MobXPData data) {
-        ctx.primaryXP.setText(valueOrDefault(data.experiencePoints()));
+        ctx.primaryXP.setText(valueOrDefault(data.primaryXP()));
         ctx.showSecondary(false);
         ctx.showBaby(false);
 
@@ -36,16 +36,16 @@ public class GeneralXPRule implements XPRule {
     public MobXPData buildData(EditorContext ctx, String id) {
         return new MobXPData(
                 id,
-                Utils.tryParse(ctx.primaryXP.getText(), (Integer) null),
-                null,
-                null,
+                Utils.tryParse(ctx.primaryXP.getText(), -1),
+                -1,
+                -1,
                 ctx.enabledCheckbox.isChecked(),
                 ctx.randomCheckbox.isChecked(),
-                ctx.useAdultXPCheckbox.isChecked()
+                ctx.usePrimaryXPForBaby.isChecked()
         );
     }
 
     protected String valueOrDefault(Integer value) {
-        return value == null ? "default" : value.toString();
+        return value == -1 ? "default" : value.toString();
     }
 }

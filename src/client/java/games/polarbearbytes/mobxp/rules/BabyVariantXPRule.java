@@ -11,7 +11,7 @@ public class BabyVariantXPRule extends GeneralXPRule {
     @Override
     public void onSelect(EditorContext ctx, MobXPData data) {
         super.onSelect(ctx, data);
-        ctx.babyXP.setText(valueOrDefault(data.babyExperiencePoints()));
+        ctx.babyXP.setText(valueOrDefault(data.babyXP()));
         ctx.showBaby(true);
     }
 
@@ -25,12 +25,12 @@ public class BabyVariantXPRule extends GeneralXPRule {
     public MobXPData buildData(EditorContext ctx, String id) {
         return new MobXPData(
                 id,
-                Utils.tryParse(ctx.primaryXP.getText(), (Integer) null),
-                null,
-                Utils.tryParse(ctx.babyXP.getText(), (Integer) null),
+                Utils.tryParse(ctx.primaryXP.getText(), -1),
+                -1,
+                Utils.tryParse(ctx.babyXP.getText(), -1),
                 ctx.enabledCheckbox.isChecked(),
                 ctx.randomCheckbox.isChecked(),
-                ctx.useAdultXPCheckbox.isChecked()
+                ctx.usePrimaryXPForBaby.isChecked()
         );
     }
 }

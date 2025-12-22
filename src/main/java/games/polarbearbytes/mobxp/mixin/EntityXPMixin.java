@@ -1,7 +1,7 @@
 package games.polarbearbytes.mobxp.mixin;
 
 import games.polarbearbytes.mobxp.MobXP;
-import games.polarbearbytes.mobxp.config.ConfigManager;
+import games.polarbearbytes.mobxp.config.MobXPStateManager;
 import games.polarbearbytes.mobxp.data.MobXPData;
 import net.minecraft.entity.*;
 import net.minecraft.entity.mob.*;
@@ -12,6 +12,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import java.util.Objects;
 
 /**
  * General mixin to modify mob classes to allow for custom xp, called if these classes overrode the getExperienceToDrop() method
@@ -33,7 +34,8 @@ public abstract class EntityXPMixin extends Entity {
         String entityId = this.getSavedEntityId();
         if(entityId == null) return;
 
-        MobXPData data = ConfigManager.getConfig().get(entityId);
+        MobXPStateManager state = MobXPStateManager.get(Objects.requireNonNull(world.getServer()));
+        MobXPData data = state.getMobData(entityId);
         if(data == null){
             MobXP.LOGGER.error("{} not found in MobXPData list", entityId);
             return;
@@ -48,18 +50,18 @@ public abstract class EntityXPMixin extends Entity {
         if(type == EntityType.CHICKEN){
             ChickenEntity chicken = (ChickenEntity) (Object) this;
 
-            if(data.experiencePoints() == null && data.secondaryExperiencePoints() == null && data.babyExperiencePoints() == null) {
+            if(data.primaryXP() <= -1 && data.secondaryXP() <= -1 && data.babyXP() <= -1) {
                 //Enabled but all the xp fields are set to default
                 return;
             } else if( chicken.hasJockey() ) {
                 //Chicken has a rider
-                xp = data.secondaryExperiencePoints();
+                xp = data.secondaryXP();
             } else if( chicken.isBaby() ){
                 //Chicken is a baby
-                xp = data.useAdultXPForBaby() ? data.experiencePoints() : data.babyExperiencePoints();
+                xp = data.usePrimaryXPForBaby() ? data.primaryXP() : data.babyXP();
             } else {
                 //Regular adult chicken
-                xp = data.experiencePoints();
+                xp = data.primaryXP();
             }
         } else if(type == EntityType.ZOMBIE && !((ZombieEntity) (Object) this).isBaby()) {
             //If it is a zombie but not a baby we let it drop through to the MobEntityMixin
@@ -67,19 +69,17 @@ public abstract class EntityXPMixin extends Entity {
         } else {
             //All other mobs
             LivingEntity entity = (LivingEntity) (Object) this;
-            Integer babyXP = data.babyExperiencePoints();
-            Integer adultXP = data.experiencePoints();
+            int babyXP = data.babyXP();
+            int adultXP = data.primaryXP();
 
-            xp = entity.isBaby() ? (data.useAdultXPForBaby() ? adultXP : babyXP) : adultXP;
+            xp = entity.isBaby() ? (data.usePrimaryXPForBaby() ? adultXP : babyXP) : adultXP;
         }
         //Custom xp was enabled but left as default
-        if(xp == null) return;
+        if(xp == -1) return;
 
         if(data.random()){
             xp = data.random() ? this.random.nextInt(xp) : xp;
         }
         cir.setReturnValue(xp);
     }
-
-
 }

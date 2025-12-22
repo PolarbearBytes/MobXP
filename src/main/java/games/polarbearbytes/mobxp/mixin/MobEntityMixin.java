@@ -1,6 +1,6 @@
 package games.polarbearbytes.mobxp.mixin;
 
-import games.polarbearbytes.mobxp.config.ConfigManager;
+import games.polarbearbytes.mobxp.config.MobXPStateManager;
 import games.polarbearbytes.mobxp.data.MobXPData;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentDropChances;
@@ -15,6 +15,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import java.util.Objects;
 
 /**
  * General mob mixin to modify MobEntity class to allow for custom xp, covers the class EntityXPMixin doesn't modify
@@ -36,7 +37,8 @@ public abstract class MobEntityMixin extends LivingEntity {
             cancellable = true
     )
     private void getExperienceToDropMixin(ServerWorld world, CallbackInfoReturnable<Integer> cir) {
-        MobXPData data = ConfigManager.getConfig().get(this.getSavedEntityId());
+        MobXPStateManager state = MobXPStateManager.get(Objects.requireNonNull(this.getEntityWorld().getServer()));
+        MobXPData data = state.getMobData(getSavedEntityId());
 
         int xp = this.experiencePoints;
 
@@ -44,8 +46,8 @@ public abstract class MobEntityMixin extends LivingEntity {
          EnderDragonEntity extends MobEntity so this method gets called on its death, but its XP is dropped from the
          updatePostDeath() method, so we need to check if entity is not dragon so we do not accidentally drop its xp here
          */
-        if(data!=null && data.experiencePoints() != null && data.enabled() && this.getType() != EntityType.ENDER_DRAGON){
-            xp = data.random() ? this.random.nextInt( data.experiencePoints() ) : data.experiencePoints();
+        if(data!=null && data.primaryXP() > -1 && data.enabled() && this.getType() != EntityType.ENDER_DRAGON){
+            xp = data.random() ? this.random.nextInt( data.primaryXP() ) : data.primaryXP();
         }
 
         if (xp > 0) {

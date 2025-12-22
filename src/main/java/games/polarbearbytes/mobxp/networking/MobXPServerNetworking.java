@@ -1,6 +1,6 @@
 package games.polarbearbytes.mobxp.networking;
 
-import games.polarbearbytes.mobxp.config.ConfigManager;
+import games.polarbearbytes.mobxp.config.MobXPStateManager;
 import games.polarbearbytes.mobxp.data.MobXPData;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -9,7 +9,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static games.polarbearbytes.mobxp.MobXP.hasManageXPPermission;
@@ -39,7 +38,8 @@ public class MobXPServerNetworking {
                     "You do not have permission to manage mob xp"
             ));
         } else {
-            List<MobXPData> dataList = new ArrayList<>(ConfigManager.getConfig().toList());
+            List<MobXPData> dataList = MobXPStateManager.get(server).getList();
+
             ServerPlayNetworking.send(player,new MobXPDataListPacket( dataList ));
         }
     }
@@ -54,13 +54,7 @@ public class MobXPServerNetworking {
             ));
         } else {
             MobXPData data = payload.data();
-            ConfigManager.getConfig().updateMobXP(data);
-            player.sendMessage(Text.of(
-                    String.format(
-                        "Updated Mob: %s, XP: %s, Enabled: %s, Use Randmo: %s",
-                        data.id(), data.experiencePoints(), data.enabled(), data.random()
-                    )
-            ));
+            MobXPStateManager.get(server).updateState(data);
         }
     }
 }
